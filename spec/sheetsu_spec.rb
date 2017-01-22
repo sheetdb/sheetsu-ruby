@@ -21,6 +21,16 @@ describe Sheetsu do
         body: "[{\"id\":\"1\",\"name\":\"Peter\",\"score\":\"43\"},{\"id\":\"2\",\"name\":\"Lois\",\"score\":\"89\"},{\"id\":\"3\",\"name\":\"Meg\",\"score\":\"10\"},{\"id\":\"4\",\"name\":\"Chris\",\"score\":\"43\"},{\"id\":\"5\",\"name\":\"Stewie\",\"score\":\"72\"}]",
       )
   end
+  let!(:get_column_stub) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/name/Lois").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"id\":\"2\",\"name\":\"Lois\",\"score\":\"89\"}]",
+      )
+  end
   let!(:get_stub_with_params) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url?limit=1&offset=2").
       with(
@@ -31,6 +41,18 @@ describe Sheetsu do
         body: "[{\"id\":\"1\",\"name\":\"Peter\",\"score\":\"43\"},{\"id\":\"2\",\"name\":\"Lois\",\"score\":\"89\"},{\"id\":\"3\",\"name\":\"Meg\",\"score\":\"10\"},{\"id\":\"4\",\"name\":\"Chris\",\"score\":\"43\"},{\"id\":\"5\",\"name\":\"Stewie\",\"score\":\"72\"}]",
       )
   end
+  let!(:get_column_stub_with_params) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/name/Lois?limit=1&offset=2").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"id\":\"1\",\"name\":\"Peter\",\"score\":\"43\"},{\"id\":\"2\",\"name\":\"Lois\",\"score\":\"89\"},{\"id\":\"3\",\"name\":\"Meg\",\"score\":\"10\"},{\"id\":\"4\",\"name\":\"Chris\",\"score\":\"43\"},{\"id\":\"5\",\"name\":\"Stewie\",\"score\":\"72\"}]",
+      )
+  end
+
+
   let!(:get_stub_with_basic_auth) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url").
       with(
@@ -81,6 +103,23 @@ describe Sheetsu do
             subject.read(limit: 1, offset: 2)
             expect(get_stub_with_params).to have_been_requested
           end
+        end
+
+        describe "#read(column: X, value: Y)" do
+          it "should send GET request to the Sheetsu API" do
+            subject.read(column: "name", value: "Lois")
+            expect(get_column_stub).to have_been_requested
+          end
+
+          it "should return array with hashes" do
+            expect(subject.read(column: "name", value: "Lois")).to eq([{ "id" => "2", "name" => "Lois", "score" => "89" }])
+          end
+
+          it "should send request with options" do
+            subject.read(column: "name", value: "Lois", limit: 1, offset: 2)
+            expect(get_column_stub_with_params).to have_been_requested
+          end
+
         end
       end
     end

@@ -12,12 +12,27 @@ module Sheetsu
 
     def rows(options={})
       @options = options
+      
+      add_options_to_url
 
       response = call(:get)
       parse_response(response)
     end
 
     private
+
+      def add_options_to_url
+        if @options[:column] && @options[:value]
+          @url += encoded_column(@options)
+          
+          @options.delete(:column)
+          @options.delete(:value)
+        end
+      end
+
+      def encoded_column(options)
+        ['/', CGI::escape(options[:column]), '/', CGI::escape(options[:value])].join('')
+      end
 
       def parse_response(response)
         case response.code.to_i

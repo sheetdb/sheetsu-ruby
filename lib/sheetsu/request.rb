@@ -20,7 +20,9 @@ module Sheetsu
     private
 
       def uri
-        @uri ||= URI.parse(Sheetsu::Util.append_query_string_to_url(@url, @options))
+        @uri ||= URI.parse(
+          Sheetsu::Util.append_query_string_to_url(@url, Sheetsu::Util.slice_options(@options))
+        )
       end
 
       def request(method)
@@ -37,10 +39,11 @@ module Sheetsu
 
       def add_basic_auth(request)
         if @basic_auth.keys.any?
-          request.basic_auth(CGI.unescape(@basic_auth[:api_key]), CGI::unescape(@basic_auth[:api_secret]))
+          request.basic_auth(CGI.unescape(@basic_auth[:api_key]), CGI.unescape(@basic_auth[:api_secret]))
         end
         request
       end
+
 
       def http_klass(method)
         case method

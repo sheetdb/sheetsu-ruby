@@ -26,12 +26,24 @@ module Sheetsu
       end
     end
 
+    def self.slice_options(options)
+      options.select do |k, v|
+        [k, v] if allowed_options.include?(k)
+      end.to_h
+    end
+
     private
       def self.query_string(options)
         options.map do |k,v|
           "#{k.to_s}=#{CGI::escape(v.to_s)}"
         end.join('&')
       end
+
+      def self.allowed_options
+        [:limit, :offset]
+      end
+
+
 
   end
 end
