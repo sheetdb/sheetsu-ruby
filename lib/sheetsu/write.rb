@@ -5,14 +5,14 @@ require 'sheetsu/request'
 require 'json'
 
 module Sheetsu
-  class Read < Sheetsu::Request
+  class Write < Sheetsu::Request
 
-    def rows(options={})
-      @options = options
-      
-      add_options_to_url
+    def row(row, options={})
+      rows([row], options)
+    end
 
-      response = call(:get)
+    def rows(rows, options={})
+      response = call(:post, rows)
       parse_response(response)
     end
 

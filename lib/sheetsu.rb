@@ -1,5 +1,6 @@
 require 'sheetsu/read'
-require 'sheetsu/Util'
+require 'sheetsu/write'
+require 'sheetsu/util'
 
 module Sheetsu
   class Client
@@ -11,6 +12,14 @@ module Sheetsu
 
     def read(options={})
       Sheetsu::Read.new(@api_url, @http_basic_auth).rows(options)
+    end
+
+    def write(data)
+      if data.is_a?(Hash)
+        Sheetsu::Write.new(@api_url, @http_basic_auth).row(data)
+      elsif data.is_a?(Array)
+        Sheetsu::Write.new(@api_url, @http_basic_auth).rows(data)
+      end
     end
   end
 end

@@ -6,13 +6,14 @@ module Sheetsu
       @basic_auth = basic_auth
     end
 
-    def call(method)
+    def call(method, body=nil)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
       request = request(method)
       request = add_headers(request)
       request = add_basic_auth(request)
+      request = add_body(request, body)
 
       http.request(request)
     end
@@ -44,12 +45,22 @@ module Sheetsu
         request
       end
 
+      def add_body(request, body)
+        if body
+          request.body = body.to_json
+        end
+        request
+      end
 
       def http_klass(method)
         case method
-        when :get
-          Net::HTTP::Get
+        when :get  then Net::HTTP::Get
+        when :post then Net::HTTP::Post
         end
+      end
+
+      def parse_response(response)
+        Sheetsu::Util.parse_response(response)
       end
 
   end
