@@ -21,7 +21,7 @@ module Sheetsu
 
       def uri
         @uri ||= URI.parse(
-          Sheetsu::Util.append_query_string_to_url(@url, Sheetsu::Util.slice_options(@options))
+          Sheetsu::Util.append_query_string_to_url(@url, @options)
         )
       end
 

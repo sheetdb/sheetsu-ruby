@@ -51,7 +51,46 @@ describe Sheetsu do
         body: "[{\"id\":\"1\",\"name\":\"Peter\",\"score\":\"43\"},{\"id\":\"2\",\"name\":\"Lois\",\"score\":\"89\"},{\"id\":\"3\",\"name\":\"Meg\",\"score\":\"10\"},{\"id\":\"4\",\"name\":\"Chris\",\"score\":\"43\"},{\"id\":\"5\",\"name\":\"Stewie\",\"score\":\"72\"}]",
       )
   end
-
+  let!(:get_sheet_stub) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"foo\":\"bar\"},{\"foo\":\"baz\"}]"
+      )
+  end
+  let!(:get_sheet_column_stub_with_params) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/foo/bar?limit=1&offset=2").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"foo\":\"bar\"}]"
+      )
+  end
+  let!(:get_search_stub) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/search?foo=bar&baz=quux").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"1\"},{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"2\"},{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"3\"}]"
+      )
+  end
+  let!(:get_search_sheet_column_stub_with_params) do
+    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/search?foo=bar&baz=quux&limit=1&offset=2").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 200,
+        body: "[{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"1\"},{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"2\"},{\"foo\":\"bar\",\"baz\":\"quux\",\"id\":\"3\"}]"
+      )
+  end
 
   let!(:get_stub_with_basic_auth) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url").
@@ -119,7 +158,38 @@ describe Sheetsu do
             subject.read(column: "name", value: "Lois", limit: 1, offset: 2)
             expect(get_column_stub_with_params).to have_been_requested
           end
+        end
 
+        describe "#read(sheet: sheet_name)" do
+          it "should send GET request to the Sheetsu API" do
+            subject.read(sheet: "Sheet1")
+            expect(get_sheet_stub).to have_been_requested
+          end
+
+          it "should return array with hashes" do
+            expect(subject.read(sheet: "Sheet1")).to eq([{ "foo" => "bar" }, { "foo" => "baz" }])
+          end
+
+          it "should send request with options" do
+            subject.read(sheet: "Sheet1", column: "foo", value: "bar", limit: 1, offset: 2)
+            expect(get_sheet_column_stub_with_params).to have_been_requested
+          end
+        end
+
+        describe "#read(search: {foo: 'bar'})" do
+          it "should send GET request to the Sheetsu API" do
+            subject.read(search: { foo: "bar", baz: "quux" })
+            expect(get_search_stub).to have_been_requested
+          end
+
+          it "should return array with hashes" do
+            expect(subject.read(search: { foo: "bar", baz: "quux" })).to eq([{ "foo" => "bar", "baz" => "quux", "id" => "1" }, { "foo" => "bar", "baz" => "quux", "id" => "2" },  { "foo" => "bar", "baz" => "quux", "id" => "3" }])
+          end
+
+          it "should send request with options" do
+            subject.read(sheet: "Sheet1", search: { foo: "bar", baz: "quux" }, limit: 1, offset: 2)
+            expect(get_search_sheet_column_stub_with_params).to have_been_requested
+          end
         end
       end
     end

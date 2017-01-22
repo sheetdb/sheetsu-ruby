@@ -26,12 +26,6 @@ module Sheetsu
       end
     end
 
-    def self.slice_options(options)
-      options.select do |k, v|
-        [k, v] if allowed_options.include?(k)
-      end.to_h
-    end
-
     private
       def self.query_string(options)
         options.map do |k,v|
@@ -42,8 +36,6 @@ module Sheetsu
       def self.allowed_options
         [:limit, :offset]
       end
-
-
 
   end
 end
