@@ -12,20 +12,20 @@ describe Sheetsu do
     ]
   end
   let(:one_row) do
-    { id: 6, name: "Glenn", score: 69 }
+    { "id" => "6", "name" => "Glenn", "score" => "69" }
   end
   let(:multiple_rows) do
     [
-      { id: 6, name: "Glenn", score: 69 },
-      { id: 7, name: "Joe", score: 44 },
-      { id: 8, name: "Cleaveland", score: 33 }
+      { "id" => "6", "name" => "Glenn", "score" => "69" },
+      { "id" => "7", "name" => "Joe", "score" => "44" },
+      { "id" => "8", "name" => "Cleaveland", "score" => "33" }
     ]
   end
   let!(:post_stub) do
     stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
       with(
         headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: [one_row].to_json
+        body: one_row.to_json
       ).
       to_return(
         status: 201,
@@ -36,12 +36,41 @@ describe Sheetsu do
     stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
       with(
         headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: multiple_rows.to_json
+        body: { rows: multiple_rows }.to_json
       ).
       to_return(
         status: 201,
         body: multiple_rows.to_json,
       )
+  end
+
+  let!(:get_stub_with_basic_auth) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0', 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' },
+        body: one_row.to_json
+      ).
+      to_return(
+        status: 200,
+        body: one_row.to_json
+      )
+  end
+  let!(:non_existent_stub) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/non_existent_api").
+      to_return(:status => 404)
+  end
+  let!(:not_permited_api) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/not_permited_api").
+      to_return(:status => 403)
+  end
+  let!(:exceed_limit) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/exceed_limit").
+      to_return(:status => 429)
+  end
+  let!(:unathorized) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
+      with(basic_auth: ['wrong', 'bad']).
+      to_return(status: 401)
   end
 
 
@@ -59,59 +88,56 @@ describe Sheetsu do
             expect(post_stub_multiple_rows).to have_been_requested
           end
 
-          # it "should return array with created rows" do
-          #   expect(subject.read).to eq(spreadsheet)
-          # end
+          context "should return array " do
+            it "with created row" do
+              expect(subject.write(one_row)).to eq(one_row)
+            end
 
-          # it "should send request with options" do
-          #   subject.read(limit: 1, offset: 2)
-          #   expect(get_stub_with_params).to have_been_requested
-          # end
+            it "with created rows" do
+              expect(subject.write(multiple_rows)).to eq(multiple_rows)
+            end
+          end
         end
       end
     end
 
+    context "limit is exceed" do
+      it "should raise LimitExceedError" do
+        client = Sheetsu::Client.new("exceed_limit")
+        expect { client.write(one_row) }.to raise_error(Sheetsu::LimitExceedError)
+      end
+    end
 
-CHECK WHAT IS RETURNED FROM API WHEN MULTIPLE ROWS ARE CREATED
-CHECK IF IT'S POSSIBLE TO SEND ARRAY OF ROWS, WITHOUT ROWS HASH (PROBABLY NOT, OR IS A BAD PRACTICE)
+    context "cannot write to API" do
+      it "should raise NotPermittedError" do
+        client = Sheetsu::Client.new("not_permited_api")
+        expect { client.write(one_row) }.to raise_error(Sheetsu::ForbiddenError)
+      end
+    end
 
-  #   context "limit is exceed" do
-  #     it "should raise LimitExceedError" do
-  #       client = Sheetsu::Client.new("exceed_limit")
-  #       expect { client.read }.to raise_error(Sheetsu::LimitExceedError)
-  #     end
-  #   end
+    context "need authorization" do
+      it "has valid credentials" do
+        client = Sheetsu::Client.new("api_url", api_key: "api_key", api_secret: "api_secret")
+        client.write(one_row)
 
-  #   context "cannot write to API" do
-  #     it "should raise NotPermittedError" do
-  #       client = Sheetsu::Client.new("not_permited_api")
-  #       expect { client.read }.to raise_error(Sheetsu::ForbiddenError)
-  #     end
-  #   end
+        expect(get_stub_with_basic_auth).to have_been_requested
+      end
 
-  #   context "need authorization" do
-  #     it "has valid credentials" do
-  #       client = Sheetsu::Client.new("api_url", api_key: "api_key", api_secret: "api_secret")
-  #       client.read
+      context "doesn't have valid credentials" do
+        it "should raise UnauthorizedError" do
+          client = Sheetsu::Client.new("api_url", api_key: "wrong", api_secret: "bad")
+          expect { client.write(one_row) }.to raise_error(Sheetsu::UnauthorizedError)
+        end
+      end
+    end
+  end
 
-  #       expect(get_stub_with_basic_auth).to have_been_requested
-  #     end
-
-  #     context "doesn't have valid credentials" do
-  #       it "should raise UnauthorizedError" do
-  #         client = Sheetsu::Client.new("api_url", api_key: "wrong", api_secret: "bad")
-  #         expect { client.read }.to raise_error(Sheetsu::UnauthorizedError)
-  #       end
-  #     end
-  #   end
-  # end
-
-  # context "API doesn't exist" do
-  #   describe "#read" do
-  #     it "should raise APINotFoundError" do
-  #       client = Sheetsu::Client.new("non_existent_api")
-  #       expect { client.read }.to raise_error(Sheetsu::APINotFoundError)
-  #     end
-  #   end
+  context "API doesn't exist" do
+    describe "#write" do
+      it "should raise APINotFoundError" do
+        client = Sheetsu::Client.new("non_existent_api")
+        expect { client.write(one_row) }.to raise_error(Sheetsu::APINotFoundError)
+      end
+    end
   end
 end
