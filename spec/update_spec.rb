@@ -38,6 +38,16 @@ describe Sheetsu do
         body: [{ "id" => "", "name" => "Glenn", "score" => "" }].to_json,
       )
   end
+  let!(:put_stub_non_existent_column) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/foo/bar").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: row.to_json
+      ).
+      to_return(
+        status: 404
+      )
+  end
 
   let!(:patch_stub) do
     stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
@@ -48,6 +58,16 @@ describe Sheetsu do
       to_return(
         status: 200,
         body: [{ "name" => "Glenn" }].to_json,
+      )
+  end
+  let!(:patch_stub_non_existent_column) do
+    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/foo/bar").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: row.to_json
+      ).
+      to_return(
+        status: 404
       )
   end
 
@@ -98,6 +118,10 @@ describe Sheetsu do
             it "only updated field if not whole row provided" do
               expect(subject.update(column, value, { "name" => "Glenn" }, true)).to eq([{ "id" => "", "name" => "Glenn", "score" => "" }])
             end
+
+            it "should raise NotFoundError if column doesn't exist" do
+              expect { subject.update("foo", "bar", row, true) }.to raise_error(Sheetsu::NotFoundError)
+            end
           end
         end
 
@@ -109,6 +133,10 @@ describe Sheetsu do
 
           it "should return updated row" do
             expect(subject.update(column, value, { "name" => "Glenn" }, false)).to eq([{ "name" => "Glenn" }])
+          end
+
+          it "should raise NotFoundError if column doesn't exist" do
+            expect { subject.update("foo", "bar", row, false) }.to raise_error(Sheetsu::NotFoundError)
           end
         end
       end
