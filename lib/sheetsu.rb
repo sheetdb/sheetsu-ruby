@@ -1,6 +1,7 @@
 require 'sheetsu/read'
 require 'sheetsu/write'
 require 'sheetsu/update'
+require 'sheetsu/delete'
 require 'sheetsu/util'
 
 module Sheetsu
@@ -36,6 +37,14 @@ module Sheetsu
       end
     end
 
+    def delete(*options)
+      if options.is_a?(Hash)
+        _delete(options)
+      else
+        _delete({ column: options[0], value: options[1] })
+      end
+    end
+
     private
       def _update(options)
         if ([:column, :value, :data] & options.keys).size == [:column, :value, :data].size
@@ -44,6 +53,14 @@ module Sheetsu
           else
             Sheetsu::Update.new(@api_url, @http_basic_auth).patch(options)
           end
+        else
+          raise Sheetsu::NotEnoughParametersError
+        end
+      end
+
+      def _delete(options)
+        if ([:column, :value] & options.keys).size == [:column, :value].size
+          Sheetsu::Delete.new(@api_url, @http_basic_auth).rows(options)
         else
           raise Sheetsu::NotEnoughParametersError
         end

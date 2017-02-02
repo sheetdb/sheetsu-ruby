@@ -30,9 +30,10 @@ module Sheetsu
       case response.code.to_i
       when 200 then JSON.parse(response.body)
       when 201 then JSON.parse(response.body)
+      when 204 then :ok
       when 401 then raise Sheetsu::UnauthorizedError
       when 403 then raise Sheetsu::ForbiddenError
-      when 404 then raise Sheetsu::APINotFoundError
+      when 404 then raise Sheetsu::NotFoundError
       when 429 then raise Sheetsu::LimitExceedError
       else
         raise Sheetsu::SheetsuError.new(nil, response.code, response.body)
