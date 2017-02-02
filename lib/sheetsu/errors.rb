@@ -15,7 +15,7 @@ module Sheetsu
     end
   end
 
-  class APINotFoundError < SheetsuError
+  class NotFoundError < SheetsuError
   end
 
   class ForbiddenError < SheetsuError

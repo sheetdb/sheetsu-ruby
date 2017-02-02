@@ -134,9 +134,9 @@ describe Sheetsu do
 
   context "API doesn't exist" do
     describe "#write" do
-      it "should raise APINotFoundError" do
+      it "should raise NotFoundError" do
         client = Sheetsu::Client.new("non_existent_api")
-        expect { client.write(one_row) }.to raise_error(Sheetsu::APINotFoundError)
+        expect { client.write(one_row) }.to raise_error(Sheetsu::NotFoundError)
       end
     end
   end

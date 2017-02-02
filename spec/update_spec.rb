@@ -147,9 +147,9 @@ describe Sheetsu do
 
   context "API doesn't exist" do
     describe "#update" do
-      it "should raise APINotFoundError" do
+      it "should raise NotFoundError" do
         client = Sheetsu::Client.new("non_existent_api")
-        expect { client.update(column, value, row, true) }.to raise_error(Sheetsu::APINotFoundError)
+        expect { client.update(column, value, row, true) }.to raise_error(Sheetsu::NotFoundError)
       end
     end
   end
