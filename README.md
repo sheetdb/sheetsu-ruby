@@ -1,15 +1,11 @@
 # Sheetsu
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sheetsu`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sheetsu'
+gem 'sheetsu-ruby'
 ```
 
 And then execute:
@@ -18,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sheetsu
+    $ gem install sheetsu-ruby
 
 ## Usage
 
@@ -32,7 +28,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sheetsu. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/sheetsu/sheetsu-ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 s = Sheetsu.new(API_SLUG or API_URL)
 
@@ -47,4 +43,5 @@ s.update()
 
 # TODO 
 parse api urls or just slugs
+
 check this 'Accept' => 'application/vnd.sheetsu.3+json',

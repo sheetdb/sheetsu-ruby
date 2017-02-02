@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sheetsu/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "sheetsu"
+  spec.name          = "sheetsu-ruby"
   spec.version       = Sheetsu::VERSION
   spec.authors       = ["Sheetsu"]
   spec.email         = ["m@sheetsu.com"]
