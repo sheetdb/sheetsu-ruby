@@ -26,4 +26,7 @@ module Sheetsu
 
   class UnauthorizedError < SheetsuError
   end
+
+  class NotEnoughParametersError < SheetsuError
+  end
 end

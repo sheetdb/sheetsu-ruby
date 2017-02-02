@@ -54,8 +54,10 @@ module Sheetsu
 
       def http_klass(method)
         case method
-        when :get  then Net::HTTP::Get
-        when :post then Net::HTTP::Post
+        when :get   then Net::HTTP::Get
+        when :post  then Net::HTTP::Post
+        when :put   then Net::HTTP::Put
+        when :patch then Net::HTTP::Patch
         end
       end
 
