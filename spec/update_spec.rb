@@ -27,6 +27,17 @@ describe Sheetsu do
         body: [row].to_json,
       )
   end
+  let!(:put_stub_to_worksheet) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: row.to_json
+      ).
+      to_return(
+        status: 200,
+        body: [row].to_json,
+      )
+  end
   let!(:put_stub_not_full) do
     stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
       with(
@@ -58,6 +69,17 @@ describe Sheetsu do
       to_return(
         status: 200,
         body: [{ "name" => "Glenn" }].to_json,
+      )
+  end
+  let!(:patch_stub_to_worksheet) do
+    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: row.to_json
+      ).
+      to_return(
+        status: 200,
+        body: [row].to_json,
       )
   end
   let!(:patch_stub_non_existent_column) do
@@ -110,6 +132,11 @@ describe Sheetsu do
             expect(put_stub).to have_been_requested
           end
 
+          it "should sent PUT request to the worksheet" do
+            subject.update(column, value, row, true, "Sheet1")
+            expect(put_stub_to_worksheet).to have_been_requested
+          end
+
           context "should return updated row" do
             it "whole if whole row provided" do
               expect(subject.update(column, value, row, true)).to eq([row])
@@ -130,6 +157,12 @@ describe Sheetsu do
             subject.update(column, value, { "name" => "Glenn" }, false)
             expect(patch_stub).to have_been_requested
           end
+
+          it "should sent PATCH request to the worksheet" do
+            subject.update(column, value, row, false, "Sheet1")
+            expect(patch_stub_to_worksheet).to have_been_requested
+          end
+
 
           it "should return updated row" do
             expect(subject.update(column, value, { "name" => "Glenn" }, false)).to eq([{ "name" => "Glenn" }])

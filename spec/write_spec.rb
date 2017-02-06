@@ -32,8 +32,30 @@ describe Sheetsu do
         body: one_row.to_json,
       )
   end
+  let!(:post_stub_to_worksheet) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: one_row.to_json
+      ).
+      to_return(
+        status: 201,
+        body: one_row.to_json,
+      )
+  end
   let!(:post_stub_multiple_rows) do
     stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
+        body: { rows: multiple_rows }.to_json
+      ).
+      to_return(
+        status: 201,
+        body: multiple_rows.to_json,
+      )
+  end
+  let!(:post_stub_to_worksheet_multiple_row) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1").
       with(
         headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
         body: { rows: multiple_rows }.to_json
@@ -83,9 +105,19 @@ describe Sheetsu do
             expect(post_stub).to have_been_requested
           end
 
+          it "should send POST request to the worksheet with one row" do
+            subject.write(one_row, "Sheet1")
+            expect(post_stub_to_worksheet).to have_been_requested
+          end
+
           it "should send POST request to the Sheetsu API with multiple rows" do
             subject.write(multiple_rows)
             expect(post_stub_multiple_rows).to have_been_requested
+          end
+
+          it "should send POST request to the worksheet with multiple rows" do
+            subject.write(multiple_rows, "Sheet1")
+            expect(post_stub_to_worksheet_multiple_row).to have_been_requested
           end
 
           context "should return array " do

@@ -22,6 +22,15 @@ describe Sheetsu do
         status: 204
       )
   end
+  let!(:delete_stub_to_worksheet) do
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
+      with(
+        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+      ).
+      to_return(
+        status: 204
+      )
+  end
   let!(:delete_stub_with_basic_auth) do
     stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
       with(
@@ -66,6 +75,11 @@ describe Sheetsu do
           it "should send DELETE request to the Sheetsu API" do
             subject.delete(column, value)
             expect(delete_stub).to have_been_requested
+          end
+
+          it "should send DELETE request to the worksheet" do
+            subject.delete(column, value, "Sheet1")
+            expect(delete_stub_to_worksheet).to have_been_requested
           end
 
           it "should return :ok" do
