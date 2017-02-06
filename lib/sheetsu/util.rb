@@ -26,6 +26,10 @@ module Sheetsu
       end
     end
 
+    def self.encoded_column(options)
+      ['/', CGI::escape(options[:column]), '/', CGI::escape(options[:value])].join('')
+    end
+
     def self.parse_response(response)
       case response.code.to_i
       when 200 then JSON.parse(response.body)

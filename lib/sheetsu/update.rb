@@ -31,18 +31,5 @@ module Sheetsu
         end
       end
 
-      def add_column_value_to_url(options)
-        if options[:column] && options[:value]
-          @url += encoded_column(options)
-          
-          options.delete(:column)
-          options.delete(:value)
-        end
-      end
-
-      def encoded_column(options)
-        ['/', CGI::escape(options[:column]), '/', CGI::escape(options[:value])].join('')
-      end
-
   end
 end

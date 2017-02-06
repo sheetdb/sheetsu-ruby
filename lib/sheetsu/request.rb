@@ -66,5 +66,27 @@ module Sheetsu
         Sheetsu::Util.parse_response(response)
       end
 
+      def add_options_to_url(options)
+        add_sheet_to_url(options)
+        add_column_value_to_url(options)
+      end
+
+      def add_column_value_to_url(options)
+        if options[:column] && options[:value]
+          @url += Sheetsu::Util.encoded_column(options)
+          
+          options.delete(:column)
+          options.delete(:value)
+        end
+      end
+
+      def add_sheet_to_url(options)
+        if options[:sheet]
+          @url += ['/sheets/', CGI::escape(options[:sheet]).to_s].join('')
+
+          options.delete(:sheet)
+        end
+      end
+
   end
 end
