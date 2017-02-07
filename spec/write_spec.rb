@@ -2,6 +2,9 @@ require "spec_helper"
 
 describe Sheetsu do
   subject { Sheetsu::Client.new("api_url") }
+  let!(:headers) do
+    { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+  end
   let(:spreadsheet) do
     [
       { "id" => "1", "name" => "Peter", "score" => "43" },
@@ -22,61 +25,32 @@ describe Sheetsu do
     ]
   end
   let!(:post_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: one_row.to_json
-      ).
-      to_return(
-        status: 201,
-        body: one_row.to_json,
-      )
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+      .with(headers: headers, body: one_row.to_json)
+      .to_return(status: 201, body: one_row.to_json)
   end
-  let!(:post_stub_to_worksheet) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: one_row.to_json
-      ).
-      to_return(
-        status: 201,
-        body: one_row.to_json,
-      )
+  let!(:post_sheet_stub) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1")
+      .with(headers: headers, body: one_row.to_json)
+      .to_return(status: 201, body: one_row.to_json)
   end
-  let!(:post_stub_multiple_rows) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: { rows: multiple_rows }.to_json
-      ).
-      to_return(
-        status: 201,
-        body: multiple_rows.to_json,
-      )
+  let!(:post_multiple_rows_stub) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+      .with(headers: headers, body: { rows: multiple_rows }.to_json)
+      .to_return(status: 201, body: multiple_rows.to_json)
   end
-  let!(:post_stub_to_worksheet_multiple_row) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: { rows: multiple_rows }.to_json
-      ).
-      to_return(
-        status: 201,
-        body: multiple_rows.to_json,
-      )
+  let!(:post_sheet_multiple_rows_stub) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1")
+      .with(headers: headers, body: { rows: multiple_rows }.to_json)
+      .to_return(status: 201, body: multiple_rows.to_json)
   end
 
-  let!(:get_stub_with_basic_auth) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0', 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' },
-        body: one_row.to_json
-      ).
-      to_return(
-        status: 200,
-        body: one_row.to_json
-      )
+  let!(:post_stub_with_basic_auth) do
+    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+      .with(headers: headers.merge({ 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' }), body: one_row.to_json)
+      .to_return(status: 200, body: one_row.to_json)
   end
+
   let!(:non_existent_stub) do
     stub_request(:post, "https://sheetsu.com/apis/v1.0/non_existent_api").
       to_return(:status => 404)
@@ -95,7 +69,6 @@ describe Sheetsu do
       to_return(status: 401)
   end
 
-
   context "API exists" do
     context "limit is not exceed" do
       context "can write to API" do
@@ -107,17 +80,17 @@ describe Sheetsu do
 
           it "should send POST request to the worksheet with one row" do
             subject.write(one_row, "Sheet1")
-            expect(post_stub_to_worksheet).to have_been_requested
+            expect(post_sheet_stub).to have_been_requested
           end
 
           it "should send POST request to the Sheetsu API with multiple rows" do
             subject.write(multiple_rows)
-            expect(post_stub_multiple_rows).to have_been_requested
+            expect(post_multiple_rows_stub).to have_been_requested
           end
 
           it "should send POST request to the worksheet with multiple rows" do
             subject.write(multiple_rows, "Sheet1")
-            expect(post_stub_to_worksheet_multiple_row).to have_been_requested
+            expect(post_sheet_multiple_rows_stub).to have_been_requested
           end
 
           context "should return array " do
@@ -152,7 +125,7 @@ describe Sheetsu do
         client = Sheetsu::Client.new("api_url", api_key: "api_key", api_secret: "api_secret")
         client.write(one_row)
 
-        expect(get_stub_with_basic_auth).to have_been_requested
+        expect(post_stub_with_basic_auth).to have_been_requested
       end
 
       context "doesn't have valid credentials" do

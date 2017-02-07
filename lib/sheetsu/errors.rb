@@ -9,10 +9,6 @@ module Sheetsu
       @http_status = http_status
       @http_body = http_body
     end
-
-    def to_s
-      "(Status #{@http_status}) #{@http_body}"
-    end
   end
 
   class NotFoundError < SheetsuError

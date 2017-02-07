@@ -2,6 +2,9 @@ require "spec_helper"
 
 describe Sheetsu do
   subject { Sheetsu::Client.new("api_url") }
+  let!(:headers) do
+    { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+  end
   let(:spreadsheet) do
     [
       { "id" => "1", "name" => "Peter", "score" => "43" },
@@ -14,59 +17,42 @@ describe Sheetsu do
   let(:column) { "name" }
   let(:value) { "Stewie" }
   let!(:delete_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
-      ).
-      to_return(
-        status: 204
-      )
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers)
+      .to_return(status: 204)
   end
-  let!(:delete_stub_to_worksheet) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
-      ).
-      to_return(
-        status: 204
-      )
+  let!(:delete_sheet_stub) do
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}")
+      .with(headers: headers)
+      .to_return(status: 204)
   end
-  let!(:delete_stub_with_basic_auth) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0', 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' },
-      ).
-      to_return(
-        status: 204,
-      )
+  let!(:delete_with_basic_auth_stub) do
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers.merge({ 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' }))
+      .to_return(status: 204)
   end
-  let!(:delete_stub_to_non_existent_column) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/foo/bar").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-      ).
-      to_return(
-        status: 404,
-      )
+  let!(:delete_to_non_existent_column_stub) do
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/foo/bar")
+      .with(headers: headers)
+      .to_return(status: 404)
   end
   let!(:non_existent_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/non_existent_api/name/Stewie").
-      to_return(:status => 404)
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/non_existent_api/name/Stewie")
+      .to_return(:status => 404)
   end
   let!(:not_permited_api) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/not_permited_api/name/Stewie").
-      to_return(:status => 403)
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/not_permited_api/name/Stewie")
+      .to_return(:status => 403)
   end
   let!(:exceed_limit) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/exceed_limit/name/Stewie").
-      to_return(:status => 429)
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/exceed_limit/name/Stewie")
+      .to_return(:status => 429)
   end
   let!(:unathorized) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/name/Stewie").
-      with(basic_auth: ['wrong', 'bad']).
-      to_return(status: 401)
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/name/Stewie")
+      .with(basic_auth: ['wrong', 'bad'])
+      .to_return(status: 401)
   end
-
 
   context "API exists" do
     context "limit is not exceed" do
@@ -79,7 +65,7 @@ describe Sheetsu do
 
           it "should send DELETE request to the worksheet" do
             subject.delete(column, value, "Sheet1")
-            expect(delete_stub_to_worksheet).to have_been_requested
+            expect(delete_sheet_stub).to have_been_requested
           end
 
           it "should return :ok" do
@@ -114,7 +100,7 @@ describe Sheetsu do
         client = Sheetsu::Client.new("api_url", api_key: "api_key", api_secret: "api_secret")
         client.delete(column, value)
 
-        expect(delete_stub_with_basic_auth).to have_been_requested
+        expect(delete_with_basic_auth_stub).to have_been_requested
       end
 
       context "doesn't have valid credentials" do

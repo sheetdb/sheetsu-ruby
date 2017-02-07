@@ -51,9 +51,5 @@ module Sheetsu
         end.join('&')
       end
 
-      def self.allowed_options
-        [:limit, :offset]
-      end
-
   end
 end

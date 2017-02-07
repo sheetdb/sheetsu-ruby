@@ -2,7 +2,10 @@ require "spec_helper"
 
 describe Sheetsu do
   subject { Sheetsu::Client.new("api_url") }
-  let(:spreadsheet) do
+  let!(:headers) do
+    { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+  end
+  let!(:spreadsheet) do
     [
       { "id" => "1", "name" => "Peter", "score" => "43" },
       { "id" => "2", "name" => "Lois", "score" => "89" },
@@ -17,111 +20,64 @@ describe Sheetsu do
     { "id" => "5", "name" => "Glenn", "score" => "69" }
   end
   let!(:put_stub) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 200,
-        body: [row].to_json,
-      )
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers, body: row.to_json)
+      .to_return(status: 200, body: [row].to_json)
   end
-  let!(:put_stub_to_worksheet) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 200,
-        body: [row].to_json,
-      )
+  let!(:put_sheet_stub) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}")
+      .with(headers: headers, body: row.to_json)
+      .to_return(status: 200, body: [row].to_json)
   end
-  let!(:put_stub_not_full) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: { "name" => "Glenn" }.to_json
-      ).
-      to_return(
-        status: 200,
-        body: [{ "id" => "", "name" => "Glenn", "score" => "" }].to_json,
-      )
+  let!(:put_not_full_stub) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers, body: { "name" => "Glenn" }.to_json)
+      .to_return(status: 200, body: [{ "id" => "", "name" => "Glenn", "score" => "" }].to_json)
   end
-  let!(:put_stub_non_existent_column) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/foo/bar").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 404
-      )
+  let!(:put_non_existent_column_stub) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/foo/bar")
+      .with(headers: headers, body: row.to_json)
+      .to_return(status: 404)
   end
-
   let!(:patch_stub) do
-    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: { "name" => "Glenn" }.to_json
-      ).
-      to_return(
-        status: 200,
-        body: [{ "name" => "Glenn" }].to_json,
-      )
+    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers, body: { "name" => "Glenn" }.to_json)
+      .to_return(status: 200, body: [{ "name" => "Glenn" }].to_json)
   end
-  let!(:patch_stub_to_worksheet) do
-    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 200,
-        body: [row].to_json,
-      )
+  let!(:patch_sheet_stub) do
+    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}")
+      .with(headers: headers, body: row.to_json)
+      .to_return(status: 200, body: [row].to_json)
   end
-  let!(:patch_stub_non_existent_column) do
-    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/foo/bar").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 404
-      )
+  let!(:patch_non_existent_column_stub) do
+    stub_request(:patch, "https://sheetsu.com/apis/v1.0/api_url/foo/bar")
+      .with(headers: headers, body: row.to_json)
+      .to_return(status: 404)
   end
 
   let!(:put_stub_with_basic_auth) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}").
-      with(
-        headers: { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0', 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' },
-        body: row.to_json
-      ).
-      to_return(
-        status: 200,
-        body: row.to_json
-      )
-  end
-  let!(:non_existent_stub) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/non_existent_api/name/Stewie").
-      to_return(:status => 404)
-  end
-  let!(:not_permited_api) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/not_permited_api/name/Stewie").
-      to_return(:status => 403)
-  end
-  let!(:exceed_limit) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/exceed_limit/name/Stewie").
-      to_return(:status => 429)
-  end
-  let!(:unathorized) do
-    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/name/Stewie").
-      with(basic_auth: ['wrong', 'bad']).
-      to_return(status: 401)
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(headers: headers.merge({ 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' }), body: row.to_json)
+      .to_return(status: 200, body: row.to_json)
   end
 
+  let!(:non_existent_stub) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/non_existent_api/#{column}/#{value}")
+      .to_return(:status => 404)
+  end
+  let!(:not_permited_api) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/not_permited_api/#{column}/#{value}")
+      .to_return(:status => 403)
+  end
+  let!(:exceed_limit) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/exceed_limit/#{column}/#{value}")
+      .to_return(:status => 429)
+  end
+  let!(:unathorized) do
+    stub_request(:put, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+      .with(basic_auth: ['wrong', 'bad'])
+      .to_return(status: 401)
+  end
 
   context "API exists" do
     context "limit is not exceed" do
@@ -134,7 +90,7 @@ describe Sheetsu do
 
           it "should sent PUT request to the worksheet" do
             subject.update(column, value, row, true, "Sheet1")
-            expect(put_stub_to_worksheet).to have_been_requested
+            expect(put_sheet_stub).to have_been_requested
           end
 
           context "should return updated row" do
@@ -160,9 +116,8 @@ describe Sheetsu do
 
           it "should sent PATCH request to the worksheet" do
             subject.update(column, value, row, false, "Sheet1")
-            expect(patch_stub_to_worksheet).to have_been_requested
+            expect(patch_sheet_stub).to have_been_requested
           end
-
 
           it "should return updated row" do
             expect(subject.update(column, value, { "name" => "Glenn" }, false)).to eq([{ "name" => "Glenn" }])
