@@ -19,30 +19,15 @@ describe Sheetsu do
       .with(headers: headers)
       .to_return(status: 200, body: spreadsheet.to_json)
   end
-  let!(:get_column_stub) do
-    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/name/Lois")
-      .with(headers: headers)
-      .to_return(status: 200, body: [{"id" => "2", "name" => "Lois", "score" => "89"}].to_json)
-  end
   let!(:get_stub_with_params) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url?limit=1&offset=2")
       .with(headers: headers)
       .to_return(status: 200, body: [{"id" => "2","name" => "Lois","score" => "89"}, {"id" => "3","name" => "Meg","score" => "10"}].to_json)
   end
-  let!(:get_column_stub_with_params) do
-    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/name/Lois?limit=1&offset=2")
-      .with(headers: headers)
-      .to_return(status: 200, body: [{"id" => "2","name" => "Lois","score" => "89"}].to_json)
-  end
   let!(:get_sheet_stub) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1")
       .with(headers: headers)
       .to_return(status: 200, body: [{"foo" => "bar"},{"foo" => "baz"}].to_json)
-  end
-  let!(:get_sheet_column_stub_with_params) do
-    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/foo/bar?limit=1&offset=2")
-      .with(headers: headers)
-      .to_return(status: 200, body: [{"foo" => "bar"}].to_json)
   end
   let!(:get_search_stub) do
     stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url/search?foo=bar&baz=quux")
@@ -98,22 +83,6 @@ describe Sheetsu do
           end
         end
 
-        describe "#read(column: X, value: Y)" do
-          it "should send GET request to the Sheetsu API" do
-            subject.read(column: "name", value: "Lois")
-            expect(get_column_stub).to have_been_requested
-          end
-
-          it "should return array with hashes" do
-            expect(subject.read(column: "name", value: "Lois")).to eq([{ "id" => "2", "name" => "Lois", "score" => "89" }])
-          end
-
-          it "should send request with options" do
-            subject.read(column: "name", value: "Lois", limit: 1, offset: 2)
-            expect(get_column_stub_with_params).to have_been_requested
-          end
-        end
-
         describe "#read(sheet: sheet_name)" do
           it "should send GET request to the Sheetsu API" do
             subject.read(sheet: "Sheet1")
@@ -122,11 +91,6 @@ describe Sheetsu do
 
           it "should return array with hashes" do
             expect(subject.read(sheet: "Sheet1")).to eq([{ "foo" => "bar" }, { "foo" => "baz" }])
-          end
-
-          it "should send request with options" do
-            subject.read(sheet: "Sheet1", column: "foo", value: "bar", limit: 1, offset: 2)
-            expect(get_sheet_column_stub_with_params).to have_been_requested
           end
         end
 

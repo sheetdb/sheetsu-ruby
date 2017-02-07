@@ -4,8 +4,6 @@ require 'sheetsu/update'
 require 'sheetsu/delete'
 require 'sheetsu/util'
 
-require 'pry'
-
 module Sheetsu
   class Client
 

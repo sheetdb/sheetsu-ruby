@@ -1,3 +1,5 @@
+require 'cgi'
+
 require 'sheetsu/version'
 
 module Sheetsu
@@ -19,15 +21,11 @@ module Sheetsu
     end
 
     def self.append_query_string_to_url(url, options)
-      if options
-        url + "?#{query_string(options)}"
-      else
-        url
-      end
+      url + "?#{query_string(options)}"
     end
 
     def self.encoded_column(options)
-      ['/', CGI::escape(options[:column]), '/', CGI::escape(options[:value])].join('')
+      ['/', CGI::escape(options[:column].to_s), '/', CGI::escape(options[:value].to_s)].join('')
     end
 
     def self.parse_response(response)

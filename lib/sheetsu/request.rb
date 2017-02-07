@@ -1,3 +1,5 @@
+require 'net/http'
+
 module Sheetsu
   class Request
     
@@ -21,9 +23,7 @@ module Sheetsu
     private
 
       def uri
-        @uri ||= URI.parse(
-          Sheetsu::Util.append_query_string_to_url(@url, @options)
-        )
+        @uri ||= URI.parse(@url)
       end
 
       def request(method)
@@ -69,6 +69,7 @@ module Sheetsu
       def add_options_to_url(options)
         add_sheet_to_url(options)
         add_column_value_to_url(options)
+        add_query_params_to_url(options)
       end
 
       def add_column_value_to_url(options)
@@ -85,6 +86,22 @@ module Sheetsu
           @url += ['/sheets/', CGI::escape(options[:sheet]).to_s].join('')
 
           options.delete(:sheet)
+        end
+      end
+
+      def add_query_params_to_url(options)
+        h = Hash.new.tap do |hash|
+          hash[:limit] = options[:limit] if options[:limit]
+          hash[:offset] = options[:offset] if options[:offset]
+
+          if options[:search]
+            hash.merge!(options[:search])
+            @url += '/search'
+          end
+        end
+
+        if h.keys.any?
+          @url = Sheetsu::Util.append_query_string_to_url(@url, h)
         end
       end
 
