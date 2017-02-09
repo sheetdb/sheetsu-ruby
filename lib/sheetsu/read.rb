@@ -1,9 +1,3 @@
-require 'sheetsu/util'
-require 'sheetsu/errors'
-require 'sheetsu/request'
-
-require 'json'
-
 module Sheetsu
   class Read < Sheetsu::Request
 

@@ -1,7 +1,3 @@
-require 'cgi'
-
-require 'sheetsu/version'
-
 module Sheetsu
   module Util
 
