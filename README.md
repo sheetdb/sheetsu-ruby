@@ -1,4 +1,4 @@
-# sheetsu-ruby
+# sheetsu-ruby [![Build passing](https://travis-ci.org/sheetsu/sheetsu-ruby.svg?branch=master)](https://travis-ci.org/sheetsu/sheetsu-ruby)
 Ruby bindings for the Sheetsu API (https://sheetsu.com/docs).
 
 ## Installation
@@ -239,6 +239,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/sheets
 [Sheetsu documentation sits on GitHub](https://github.com/sheetsu/docs). We would love your contributions! We want to make these docs accessible and easy to understand for everyone. Please send us Pull Requests or open issues on GitHub.
 
 # To do 
- - TravisCI
  - CodeClimate
  - RuboCop
