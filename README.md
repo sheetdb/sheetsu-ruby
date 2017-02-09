@@ -24,6 +24,8 @@ Or install it yourself as:
 You need to create a new Sheetsu::Client object, and populate it with your Sheetsu API URL. You can find this URL on [Sheetsu Dashboard](https://sheetsu.com/your-apis).
 
 ```ruby
+require 'sheetsu'
+
 # Create new client object
 client = Sheetsu::Client.new("https://sheetsu.com/apis/v1.0/020b2c0f")
 ```
@@ -237,9 +239,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/sheets
 [Sheetsu documentation sits on GitHub](https://github.com/sheetsu/docs). We would love your contributions! We want to make these docs accessible and easy to understand for everyone. Please send us Pull Requests or open issues on GitHub.
 
 # To do 
-1. Allow passing whole API URLs as well as just slugs to the client, like:
-```ruby
-client = Sheetsu::Client.new("https://sheetsu.com/apis/v1.0/020b2c0f")
-# should be the same as
-client = Sheetsu::Client.new("020b2c0f")
-```
+ - TravisCI
+ - CodeClimate
+ - RuboCop

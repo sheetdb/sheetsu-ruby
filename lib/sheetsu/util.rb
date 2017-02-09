@@ -1,7 +1,7 @@
 module Sheetsu
   module Util
 
-    @sheetsu_api_url = "https://sheetsu.com/apis/v1.0/"
+    SHEETSU_API_URL_BEGINNING = "https://sheetsu.com/apis/v1.0/"
 
     def self.default_headers
       {
@@ -13,7 +13,11 @@ module Sheetsu
     end
 
     def self.parse_api_url(url)
-      [@sheetsu_api_url, url].join('')
+      if url.start_with?(SHEETSU_API_URL_BEGINNING)
+        url
+      else
+        [SHEETSU_API_URL_BEGINNING, url].join('')
+      end
     end
 
     def self.append_query_string_to_url(url, options)
