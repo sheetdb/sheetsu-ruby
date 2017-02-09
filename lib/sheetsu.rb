@@ -1,5 +1,5 @@
+require 'sheetsu/create'
 require 'sheetsu/read'
-require 'sheetsu/write'
 require 'sheetsu/update'
 require 'sheetsu/delete'
 require 'sheetsu/util'
@@ -12,16 +12,16 @@ module Sheetsu
       @http_basic_auth = auth_credentials
     end
 
-    def read(options={})
-      Sheetsu::Read.new(@api_url, @http_basic_auth).rows(options)
+    def create(data, sheet=nil)
+      if data.is_a?(Hash)
+        Sheetsu::Create.new(@api_url, @http_basic_auth).row(data, { sheet: sheet })
+      elsif data.is_a?(Array)
+        Sheetsu::Create.new(@api_url, @http_basic_auth).rows(data, { sheet: sheet })
+      end 
     end
 
-    def write(data, sheet=nil)
-      if data.is_a?(Hash)
-        Sheetsu::Write.new(@api_url, @http_basic_auth).row(data, { sheet: sheet })
-      elsif data.is_a?(Array)
-        Sheetsu::Write.new(@api_url, @http_basic_auth).rows(data, { sheet: sheet })
-      end 
+    def read(options={})
+      Sheetsu::Read.new(@api_url, @http_basic_auth).rows(options)
     end
 
     def update(column, value, data, update_whole=false, sheet=nil)

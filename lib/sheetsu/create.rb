@@ -5,7 +5,7 @@ require 'sheetsu/request'
 require 'json'
 
 module Sheetsu
-  class Write < Sheetsu::Request
+  class Create < Sheetsu::Request
 
     def row(row, options={})
       add_options_to_url(options)
