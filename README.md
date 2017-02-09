@@ -66,7 +66,7 @@ By default, all writes are performed on the first sheet (worksheet). Pass name o
 client.create({ "foo" => "bar", "baz" => "quux" }, "Sheet3")
 ```
 
-On success returns a hash or an array of hashes with created values. On error check [errors](#Errors).
+On success returns a hash or an array of hashes with created values. On error check [errors](#errors).
 
 ### Read
 [Link to docs](https://sheetsu.com/docs#get)
@@ -115,7 +115,7 @@ client.read(
 )
 ```
 
-On success returns an array of hashes. On error check [errors](#Errors).
+On success returns an array of hashes. On error check [errors](#errors).
 
 ### Update
 [Link to docs](https://sheetsu.com/docs#patch)
@@ -159,7 +159,7 @@ client.update(
 )
 ```
 
-On success returns an array of hashes with updated values. On error check [errors](#Errors).
+On success returns an array of hashes with updated values. On error check [errors](#errors).
 
 ### Delete
 [Link to docs](https://sheetsu.com/docs#delete)
@@ -184,7 +184,7 @@ client.delete(
 )
 ```
 
-If success returns `:ok` symbol. If error check [errors](#Errors).
+If success returns `:ok` symbol. If error check [errors](#errors).
 
 ### Errors
 There are different styles of error handling. We choose to throw exceptions and signal failure loudly. You do not need to deal with any HTTP responses from the API calls directly. All exceptions are matching particular response code from Sheetsu API. You can [read more about it here](https://sheetsu.com/docs#statuses).
