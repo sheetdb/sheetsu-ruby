@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["m@sheetsu.com"]
 
   spec.summary       = %q{Turn Google Spreadsheets into REST APIs}
-  spec.description   = %q{Sheetsu (https://sheetsu.com) allows you to automate Google Spreadsheets and use them as a resource in a REST API. It's easier than using standard Google Spreadsheets API, because Sheetsu handles all the 'dirty' work for you.}
+  spec.description   = %q{Official Sheetsu API wrapper (https://sheetsu.com/docs). Sheetsu allows you to automate Google Spreadsheets and use them as a resource in a REST API. It is easier than using standard Google Spreadsheets API because Sheetsu handles all the 'dirty' work for you.}
   spec.homepage      = "https://sheetsu.com"
 
   spec.license       = "MIT"
