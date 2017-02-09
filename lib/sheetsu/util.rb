@@ -45,7 +45,7 @@ module Sheetsu
     private
       def self.query_string(options)
         options.map do |k,v|
-          "#{k.to_s}=#{CGI::escape(v.to_s)}"
+          "#{k}=#{CGI::escape(v.to_s)}"
         end.join('&')
       end
 
