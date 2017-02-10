@@ -3,7 +3,7 @@ require "spec_helper"
 describe Sheetsu do
   subject { Sheetsu::Client.new("api_url") }
   let!(:headers) do
-    { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Sheetsu-Ruby/0.1.0' }
+    { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>"Sheetsu-Ruby/#{Sheetsu::VERSION}" }
   end
   let(:spreadsheet) do
     [
