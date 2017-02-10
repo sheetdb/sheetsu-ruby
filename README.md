@@ -1,5 +1,4 @@
-[![Build passing](https://travis-ci.org/sheetsu/sheetsu-ruby.svg?branch=master)](https://travis-ci.org/sheetsu/sheetsu-ruby) [![Code Climate](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/gpa.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby) [![Test Coverage](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/coverage.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby/coverage)
-# sheetsu-ruby
+# sheetsu-ruby [![Build passing](https://travis-ci.org/sheetsu/sheetsu-ruby.svg?branch=master)](https://travis-ci.org/sheetsu/sheetsu-ruby) [![Code Climate](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/gpa.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby)
 Ruby bindings for the Sheetsu API (https://sheetsu.com/docs).
 
 ## Installation
@@ -7,7 +6,7 @@ Ruby bindings for the Sheetsu API (https://sheetsu.com/docs).
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sheetsu-ruby'
+gem 'sheetsu'
 ```
 
 And then execute:
@@ -16,7 +15,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sheetsu-ruby
+    $ gem install sheetsu
 
 ## Usage
 

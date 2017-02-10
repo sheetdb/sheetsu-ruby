@@ -7,6 +7,5 @@
 /pkg/
 /spec/reports/
 /tmp/
-/sheetsu-ruby-*.gem
 /sheetsu-*.gem
 .rvmrc
