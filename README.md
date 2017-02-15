@@ -237,7 +237,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/sheets
 ### Docs
 
 [Sheetsu documentation sits on GitHub](https://github.com/sheetsu/docs). We would love your contributions! We want to make these docs accessible and easy to understand for everyone. Please send us Pull Requests or open issues on GitHub.
-
-# To do 
- - CodeClimate
- - RuboCop
