@@ -1,4 +1,4 @@
-# sheetsu-ruby [![Build passing](https://travis-ci.org/sheetsu/sheetsu-ruby.svg?branch=master)](https://travis-ci.org/sheetsu/sheetsu-ruby) [![Code Climate](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/gpa.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby)
+# sheetsu-ruby [![Build passing](https://travis-ci.org/sheetsu/sheetsu-ruby.svg?branch=master)](https://travis-ci.org/sheetsu/sheetsu-ruby) [![Code Climate](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/gpa.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby) [![Test Coverage](https://codeclimate.com/github/sheetsu/sheetsu-ruby/badges/coverage.svg)](https://codeclimate.com/github/sheetsu/sheetsu-ruby/coverage)
 Ruby bindings for the Sheetsu API (https://sheetsu.com/docs).
 
 ## Installation
