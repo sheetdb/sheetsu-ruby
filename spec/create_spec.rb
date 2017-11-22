@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Sheetsu do
-  subject { Sheetsu::Client.new("api_url") }
+  subject { Sheetsu::Client.new("https://sheetsu.com/apis/v1.0or/api_url") }
   let!(:headers) do
     { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>"Sheetsu-Ruby/#{Sheetsu::VERSION}"}
   end
@@ -25,46 +25,46 @@ describe Sheetsu do
     ]
   end
   let!(:post_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url")
       .with(headers: headers, body: one_row.to_json)
       .to_return(status: 201, body: one_row.to_json)
   end
   let!(:post_sheet_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1")
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url/sheets/Sheet1")
       .with(headers: headers, body: one_row.to_json)
       .to_return(status: 201, body: one_row.to_json)
   end
   let!(:post_multiple_rows_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url")
       .with(headers: headers, body: { rows: multiple_rows }.to_json)
       .to_return(status: 201, body: multiple_rows.to_json)
   end
   let!(:post_sheet_multiple_rows_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1")
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url/sheets/Sheet1")
       .with(headers: headers, body: { rows: multiple_rows }.to_json)
       .to_return(status: 201, body: multiple_rows.to_json)
   end
 
   let!(:post_stub_with_basic_auth) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url")
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url")
       .with(headers: headers.merge({ 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' }), body: one_row.to_json)
       .to_return(status: 200, body: one_row.to_json)
   end
 
   let!(:non_existent_stub) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/non_existent_api").
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/non_existent_api").
       to_return(:status => 404)
   end
   let!(:not_permited_api) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/not_permited_api").
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/not_permited_api").
       to_return(:status => 403)
   end
   let!(:exceed_limit) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/exceed_limit").
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/exceed_limit").
       to_return(:status => 429)
   end
   let!(:unathorized) do
-    stub_request(:post, "https://sheetsu.com/apis/v1.0/api_url").
+    stub_request(:post, "https://sheetsu.com/apis/v1.0or/api_url").
       with(basic_auth: ['wrong', 'bad']).
       to_return(status: 401)
   end

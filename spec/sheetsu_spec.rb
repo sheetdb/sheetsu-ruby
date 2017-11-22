@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Sheetsu do
   let!(:error_500) do
-    stub_request(:get, "https://sheetsu.com/apis/v1.0/api_url_500")
+    stub_request(:get, "https://sheetsu.com/apis/v1.0or/api_url_500")
       .to_return(status: 500)
   end
 

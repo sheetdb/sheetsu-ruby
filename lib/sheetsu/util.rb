@@ -1,7 +1,7 @@
 module Sheetsu
   module Util
 
-    SHEETSU_API_URL_BEGINNING = "https://sheetsu.com/apis/v1.0/"
+    SHEETSU_API_URL_BEGINNING = "https://sheetsu.com/apis/v1.0or/"
 
     def self.default_headers
       {
