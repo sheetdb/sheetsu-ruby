@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Sheetsu do
-  subject { Sheetsu::Client.new("api_url") }
+  subject { Sheetsu::Client.new("https://sheetsu.com/apis/v1.0or/api_url") }
   let!(:headers) do
     { 'Accept' => 'application/vnd.sheetsu.3+json', 'Accept-Encoding' => 'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>"Sheetsu-Ruby/#{Sheetsu::VERSION}" }
   end
@@ -17,39 +17,39 @@ describe Sheetsu do
   let(:column) { "name" }
   let(:value) { "Stewie" }
   let!(:delete_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/api_url/#{column}/#{value}")
       .with(headers: headers)
       .to_return(status: 204)
   end
   let!(:delete_sheet_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/sheets/Sheet1/#{column}/#{value}")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/api_url/sheets/Sheet1/#{column}/#{value}")
       .with(headers: headers)
       .to_return(status: 204)
   end
   let!(:delete_with_basic_auth_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/#{column}/#{value}")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/api_url/#{column}/#{value}")
       .with(headers: headers.merge({ 'Authorization'=>'Basic YXBpX2tleTphcGlfc2VjcmV0' }))
       .to_return(status: 204)
   end
   let!(:delete_to_non_existent_column_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/foo/bar")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/api_url/foo/bar")
       .with(headers: headers)
       .to_return(status: 404)
   end
   let!(:non_existent_stub) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/non_existent_api/name/Stewie")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/non_existent_api/name/Stewie")
       .to_return(:status => 404)
   end
   let!(:not_permited_api) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/not_permited_api/name/Stewie")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/not_permited_api/name/Stewie")
       .to_return(:status => 403)
   end
   let!(:exceed_limit) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/exceed_limit/name/Stewie")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/exceed_limit/name/Stewie")
       .to_return(:status => 429)
   end
   let!(:unathorized) do
-    stub_request(:delete, "https://sheetsu.com/apis/v1.0/api_url/name/Stewie")
+    stub_request(:delete, "https://sheetsu.com/apis/v1.0or/api_url/name/Stewie")
       .with(basic_auth: ['wrong', 'bad'])
       .to_return(status: 401)
   end

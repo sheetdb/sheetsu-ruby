@@ -27,7 +27,7 @@ You need to create a new Sheetsu::Client object, and populate it with your Sheet
 require 'sheetsu'
 
 # Create new client object
-client = Sheetsu::Client.new("https://sheetsu.com/apis/v1.0/020b2c0f")
+client = Sheetsu::Client.new("https://sheetsu.com/apis/v1.0or/020b2c0f")
 ```
 or
 ```ruby
