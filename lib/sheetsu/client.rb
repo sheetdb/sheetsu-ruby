@@ -11,7 +11,7 @@ module Sheetsu
         Sheetsu::Create.new(@api_url, @http_basic_auth).row(data, { sheet: sheet })
       elsif data.is_a?(Array)
         Sheetsu::Create.new(@api_url, @http_basic_auth).rows(data, { sheet: sheet })
-      end 
+      end
     end
 
     def read(options={})
@@ -34,5 +34,10 @@ module Sheetsu
       Sheetsu::Delete.new(@api_url, @http_basic_auth).rows(options)
     end
 
+    def destroy(params, sheet=nil)
+      options = { sheet: sheet }
+
+      Sheetsu::Destroy.new(@api_url, @http_basic_auth).rows(params, options)
+    end
   end
 end

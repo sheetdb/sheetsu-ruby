@@ -5,6 +5,7 @@ require 'sheetsu/create'
 require 'sheetsu/read'
 require 'sheetsu/update'
 require 'sheetsu/delete'
+require 'sheetsu/destroy'
 require 'sheetsu/util'
 require 'sheetsu/version'
 
