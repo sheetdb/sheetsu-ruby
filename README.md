@@ -188,6 +188,36 @@ client.delete(
 
 If success returns `:ok` symbol. If error check [errors](#errors).
 
+### Destroy
+[Link to docs](https://docs.sheetsu.com/#destroy)
+
+To destroy row(s), pass a hash with search params.
+
+```ruby
+# Destroy all rows where 'name' equals 'Peter'
+client.destroy(
+  { name: "Peter" } # column_name: value
+)
+```
+
+```ruby
+# Destroy all rows where 'name' equals 'Peter' and column 'score' equals '42'
+client.destroy(
+  { name: "Peter", score: "42" } # column_name: value
+)
+```
+
+You can pass sheet name as a 2nd argument. All operations are performed on the first sheet, by default.
+```ruby
+# Delete all rows where 'foo' equals 'bar' in sheet 'Sheet3'
+client.destroy(
+  { name: "Peter" }, # column_name: value
+  "Sheet3"           # sheet name
+)
+```
+
+On success, returns an array of hashes with all destroyed rows. If error check [errors](#errors).
+
 ### Errors
 There are different styles of error handling. We choose to throw exceptions and signal failure loudly. You do not need to deal with any HTTP responses from the API calls directly. All exceptions are matching particular response code from Sheetsu API. You can [read more about it here](https://sheetsu.com/docs#statuses).
 
